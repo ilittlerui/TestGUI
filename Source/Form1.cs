@@ -2046,7 +2046,7 @@ namespace ZGWUI
                 try
                 {
                     otaFileStream = File.OpenRead(openOtaFileDialog.FileName);                    
-                    otaFileStream.Read(au8OTAFile, 0, Convert.ToInt32(otaFileStream.Length));
+                    otaFileStream.Read(au8OTAFile, 0, Convert.ToInt32(otaFileStream.Length));           //读取 ota 文件
 
                     byte[] au8OtaFileHeaderString = null;
                     au8OtaFileHeaderString = new byte[32];
