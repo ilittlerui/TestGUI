@@ -14,6 +14,223 @@ using ListManagement;
 using System.IO;
 using System.Collections;
 
+
+
+#if false
+/** Serial link message types */
+typedef enum
+{
+    /* Common Commands */
+    E_SL_MSG_STATUS = 0x8000,
+    E_SL_MSG_LOG = 0x8001,
+
+    E_SL_MSG_DATA_INDICATION = 0x8002,
+
+    E_SL_MSG_NODE_CLUSTER_LIST = 0x8003,
+    E_SL_MSG_NODE_ATTRIBUTE_LIST = 0x8004,
+    E_SL_MSG_NODE_COMMAND_ID_LIST = 0x8005,
+    E_SL_MSG_NODE_NON_FACTORY_NEW_RESTART = 0x8006,
+    E_SL_MSG_NODE_FACTORY_NEW_RESTART = 0x8007,
+    E_SL_MSG_GET_VERSION = 0x0010,
+    E_SL_MSG_VERSION_LIST = 0x8010,
+
+    E_SL_MSG_SET_EXT_PANID = 0x0020,
+    E_SL_MSG_SET_CHANNELMASK = 0x0021,
+    E_SL_MSG_SET_SECURITY = 0x0022,
+    E_SL_MSG_SET_DEVICETYPE = 0x0023,
+    E_SL_MSG_START_NETWORK = 0x0024,
+    E_SL_MSG_START_SCAN = 0x0025,
+    E_SL_MSG_NETWORK_JOINED_FORMED = 0x8024,
+    E_SL_MSG_NETWORK_REMOVE_DEVICE = 0x0026,
+    E_SL_MSG_NETWORK_WHITELIST_ENABLE = 0x0027,
+    E_SL_MSG_ADD_AUTHENTICATE_DEVICE = 0x0028,
+    E_SL_MSG_AUTHENTICATE_DEVICE_RESPONSE = 0x8028,
+
+    E_SL_MSG_RESET = 0x0011,
+    E_SL_MSG_ERASE_PERSISTENT_DATA = 0x0012,
+    E_SL_MSG_ZLL_FACTORY_NEW = 0x0013,
+    E_SL_MSG_GET_PERMIT_JOIN = 0x0014,
+    E_SL_MSG_GET_PERMIT_JOIN_RESPONSE = 0x8014,
+    E_SL_MSG_BIND = 0x0030,
+    E_SL_MSG_BIND_RESPONSE = 0x8030,
+    E_SL_MSG_UNBIND = 0x0031,
+    E_SL_MSG_UNBIND_RESPONSE = 0x8031,
+
+    E_SL_MSG_NETWORK_ADDRESS_REQUEST = 0x0040,
+    E_SL_MSG_NETWORK_ADDRESS_RESPONSE = 0x8040,
+    E_SL_MSG_IEEE_ADDRESS_REQUEST = 0x0041,
+    E_SL_MSG_IEEE_ADDRESS_RESPONSE = 0x8041,
+    E_SL_MSG_NODE_DESCRIPTOR_REQUEST = 0x0042,
+    E_SL_MSG_NODE_DESCRIPTOR_RESPONSE = 0x8042,
+    E_SL_MSG_SIMPLE_DESCRIPTOR_REQUEST = 0x0043,
+    E_SL_MSG_SIMPLE_DESCRIPTOR_RESPONSE = 0x8043,
+    E_SL_MSG_POWER_DESCRIPTOR_REQUEST = 0x0044,
+    E_SL_MSG_POWER_DESCRIPTOR_RESPONSE = 0x8044,
+    E_SL_MSG_ACTIVE_ENDPOINT_REQUEST = 0x0045,
+    E_SL_MSG_ACTIVE_ENDPOINT_RESPONSE = 0x8045,
+    E_SL_MSG_MATCH_DESCRIPTOR_REQUEST = 0x0046,
+    E_SL_MSG_MATCH_DESCRIPTOR_RESPONSE = 0x8046,
+    E_SL_MSG_MANAGEMENT_LEAVE_REQUEST = 0x0047,
+    E_SL_MSG_MANAGEMENT_LEAVE_RESPONSE = 0x8047,
+    E_SL_MSG_LEAVE_INDICATION = 0x8048,
+    E_SL_MSG_PERMIT_JOINING_REQUEST = 0x0049,
+    E_SL_MSG_MANAGEMENT_NETWORK_UPDATE_REQUEST = 0x004A,
+    E_SL_MSG_MANAGEMENT_NETWORK_UPDATE_RESPONSE = 0x804A,
+    E_SL_MSG_SYSTEM_SERVER_DISCOVERY = 0x004B,
+    E_SL_MSG_SYSTEM_SERVER_DISCOVERY_RESPONSE = 0x804B,
+    E_SL_MSG_DEVICE_ANNOUNCE = 0x004D,
+    E_SL_MSG_MANAGEMENT_LQI_REQUEST = 0x004E,
+    E_SL_MSG_MANAGEMENT_LQI_RESPONSE = 0x804E,
+
+    /* Group Cluster */
+    E_SL_MSG_ADD_GROUP = 0x0060,
+    E_SL_MSG_ADD_GROUP_RESPONSE = 0x8060,
+    E_SL_MSG_VIEW_GROUP = 0x0061,
+    E_SL_MSG_VIEW_GROUP_RESPONSE = 0x8061,
+    E_SL_MSG_GET_GROUP_MEMBERSHIP = 0x0062,
+    E_SL_MSG_GET_GROUP_MEMBERSHIP_RESPONSE = 0x8062,
+    E_SL_MSG_REMOVE_GROUP = 0x0063,
+    E_SL_MSG_REMOVE_GROUP_RESPONSE = 0x8063,
+    E_SL_MSG_REMOVE_ALL_GROUPS = 0x0064,
+    E_SL_MSG_ADD_GROUP_IF_IDENTIFY = 0x0065,
+
+    /* Identify Cluster */
+    E_SL_MSG_IDENTIFY_SEND = 0x0070,
+    E_SL_MSG_IDENTIFY_QUERY = 0x0071,
+
+    /* Level Cluster */
+    E_SL_MSG_MOVE_TO_LEVEL = 0x0080,
+    E_SL_MSG_MOVE_TO_LEVEL_ONOFF = 0x0081,
+    E_SL_MSG_MOVE_STEP = 0x0082,
+    E_SL_MSG_MOVE_STOP_MOVE = 0x0083,
+    E_SL_MSG_MOVE_STOP_ONOFF = 0x0084,
+
+    /* Scenes Cluster */
+    E_SL_MSG_VIEW_SCENE = 0x00A0,
+    E_SL_MSG_VIEW_SCENE_RESPONSE = 0x80A0,
+    E_SL_MSG_ADD_SCENE = 0x00A1,
+    E_SL_MSG_ADD_SCENE_RESPONSE = 0x80A1,
+    E_SL_MSG_REMOVE_SCENE = 0x00A2,
+    E_SL_MSG_REMOVE_SCENE_RESPONSE = 0x80A2,
+    E_SL_MSG_REMOVE_ALL_SCENES = 0x00A3,
+    E_SL_MSG_REMOVE_ALL_SCENES_RESPONSE = 0x80A3,
+    E_SL_MSG_STORE_SCENE = 0x00A4,
+    E_SL_MSG_STORE_SCENE_RESPONSE = 0x80A4,
+    E_SL_MSG_RECALL_SCENE = 0x00A5,
+    E_SL_MSG_SCENE_MEMBERSHIP_REQUEST = 0x00A6,
+    E_SL_MSG_SCENE_MEMBERSHIP_RESPONSE = 0x80A6,
+
+    /* Colour Cluster */
+    E_SL_MSG_MOVE_TO_HUE = 0x00B0,
+    E_SL_MSG_MOVE_HUE = 0x00B1,
+    E_SL_MSG_STEP_HUE = 0x00B2,
+    E_SL_MSG_MOVE_TO_SATURATION = 0x00B3,
+    E_SL_MSG_MOVE_SATURATION = 0x00B4,
+    E_SL_MSG_STEP_SATURATION = 0x00B5,
+    E_SL_MSG_MOVE_TO_HUE_SATURATION = 0x00B6,
+    E_SL_MSG_MOVE_TO_COLOUR = 0x00B7,
+    E_SL_MSG_MOVE_COLOUR = 0x00B8,
+    E_SL_MSG_STEP_COLOUR = 0x00B9,
+
+//# ifdef APP_COMMISSIONING_ENABLED
+//    /* ZLL Commands */
+//    /* Touchlink */
+//    E_SL_MSG_INITIATE_TOUCHLINK = 0x00D0,
+//    E_SL_MSG_TOUCHLINK_STATUS = 0x00D1,
+//    E_SL_MSG_TOUCHLINK_FACTORY_RESET = 0x00D2,
+//#endif
+    /* Identify Cluster */
+    E_SL_MSG_IDENTIFY_TRIGGER_EFFECT = 0x00E0,
+
+    /* On/Off Cluster */
+    E_SL_MSG_ONOFF_NOEFFECTS = 0x0092,
+    E_SL_MSG_ONOFF_TIMED = 0x0093,
+    E_SL_MSG_ONOFF_EFFECTS = 0x0094,
+    E_SL_MSG_ONOFF_UPDATE = 0x8095,
+
+    /* Scenes Cluster */
+    E_SL_MSG_ADD_ENHANCED_SCENE = 0x00A7,
+    E_SL_MSG_VIEW_ENHANCED_SCENE = 0x00A8,
+    E_SL_MSG_COPY_SCENE = 0x00A9,
+
+    /* Colour Cluster */
+    E_SL_MSG_ENHANCED_MOVE_TO_HUE = 0x00BA,
+    E_SL_MSG_ENHANCED_MOVE_HUE = 0x00BB,
+    E_SL_MSG_ENHANCED_STEP_HUE = 0x00BC,
+    E_SL_MSG_ENHANCED_MOVE_TO_HUE_SATURATION = 0x00BD,
+    E_SL_MSG_COLOUR_LOOP_SET = 0x00BE,
+    E_SL_MSG_STOP_MOVE_STEP = 0x00BF,
+    E_SL_MSG_MOVE_TO_COLOUR_TEMPERATURE = 0x00C0,
+    E_SL_MSG_MOVE_COLOUR_TEMPERATURE = 0x00C1,
+    E_SL_MSG_STEP_COLOUR_TEMPERATURE = 0x00C2,
+
+
+    /* Door Lock Cluster */
+    E_SL_MSG_LOCK_UNLOCK_DOOR = 0x00F0,
+
+    /* ZHA Commands */
+    E_SL_MSG_READ_ATTRIBUTE_REQUEST = 0x0100,
+    E_SL_MSG_READ_ATTRIBUTE_RESPONSE = 0x8100,
+    E_SL_MSG_DEFAULT_RESPONSE = 0x8101,
+    E_SL_MSG_REPORT_IND_ATTR_RESPONSE = 0x8102,
+    E_SL_MSG_WRITE_ATTRIBUTE_REQUEST = 0x0110,
+    E_SL_MSG_WRITE_ATTRIBUTE_RESPONSE = 0x8110,
+    E_SL_MSG_CONFIG_REPORTING_REQUEST = 0x0120,
+    E_SL_MSG_CONFIG_REPORTING_RESPONSE = 0x8120,
+    E_SL_MSG_REPORT_ATTRIBUTES = 0x8121,
+    E_SL_MSG_ATTRIBUTE_DISCOVERY_REQUEST = 0x0140,
+    E_SL_MSG_ATTRIBUTE_DISCOVERY_RESPONSE = 0x8140,
+
+    E_SL_MSG_SAVE_PDM_RECORD = 0x0200,
+    E_SL_MSG_SAVE_PDM_RECORD_RESPONSE = 0x8200,
+    E_SL_MSG_LOAD_PDM_RECORD_REQUEST = 0x0201,
+    E_SL_MSG_LOAD_PDM_RECORD_RESPONSE = 0x8201,
+    E_SL_MSG_DELETE_PDM_RECORD = 0x0202,
+
+    E_SL_MSG_PDM_HOST_AVAILABLE = 0x0300,
+    E_SL_MSG_ASC_LOG_MSG = 0x0301,
+    E_SL_MSG_PDM_HOST_AVAILABLE_RESPONSE = 0x8300,
+
+
+
+    /* IAS Cluster */
+    E_SL_MSG_SEND_IAS_ZONE_ENROLL_RSP = 0x0400,
+    E_SL_MSG_IAS_ZONE_STATUS_CHANGE_NOTIFY = 0x8401,
+
+
+    /* OTA Cluster //暂未实现*/
+    E_SL_MSG_LOAD_NEW_IMAGE = 0x0500,
+    E_SL_MSG_BLOCK_REQUEST = 0x8501,
+    E_SL_MSG_BLOCK_SEND = 0x0502,
+    E_SL_MSG_UPGRADE_END_REQUEST = 0x8503,
+    E_SL_MSG_UPGRADE_END_RESPONSE = 0x0504,
+    E_SL_MSG_IMAGE_NOTIFY = 0x0505,
+
+    /*Network Recovery               暂未实现*/
+    E_SL_MSG_NWK_RECOVERY_EXTRACT_REQ = 0x0600,
+    E_SL_MSG_NWK_RECOVERY_EXTRACT_RSP = 0x8600,
+    E_SL_MSG_NWK_RECOVERY_RESTORE_REQ = 0x0601,
+    E_SL_MSG_NWK_RECOVERY_RESTORE_RSP = 0x8601,
+
+    E_SL_MSG_ROUTE_DISCOVERY_CONFIRM = 0x8701,
+    E_SL_MSG_APS_DATA_CONFIRM_FAILED = 0x8702,
+
+
+    /* Persistant data manager messages   暂未实现*/
+    E_SL_MSG_PDM_AVAILABLE_REQUEST = 0x0300,
+    E_SL_MSG_PDM_AVAILABLE_RESPONSE = 0x8300,
+    E_SL_MSG_PDM_SAVE_RECORD_REQUEST = 0x0200,
+    E_SL_MSG_PDM_SAVE_RECORD_RESPONSE = 0x8200,
+    E_SL_MSG_PDM_LOAD_RECORD_REQUEST = 0x0201,
+    E_SL_MSG_PDM_LOAD_RECORD_RESPONSE = 0x8201,
+    E_SL_MSG_PDM_DELETE_ALL_RECORDS_REQUEST = 0x0202,
+    E_SL_MSG_PDM_DELETE_ALL_RECORDS_RESPONSE = 0x8202,
+
+}
+teSL_MsgType;
+
+#endif
+
 namespace ZGWUI
 {
     public partial class Form1 : Form
@@ -22,18 +239,18 @@ namespace ZGWUI
         ListManager listManager;
 
         byte[] au8OTAFile = new byte[262144]; // 256k max file size
-        byte u8OtaInProgress = 0;
-        byte u8OTAWaitForDataParamsPending = 0;
-        UInt16 u16OTAWaitForDataParamsTargetAddr;
-        byte u8OTAWaitForDataParamsSrcEndPoint;
-        UInt32 u32OTAWaitForDataParamsCurrentTime;
-        UInt32 u32OTAWaitForDataParamsRequestTime;
-        UInt16 u16OTAWaitForDataParamsBlockDelay;
-        UInt32 u32OtaFileIdentifier;
-        UInt16 u16OtaFileHeaderVersion;
-        UInt16 u16OtaFileHeaderLength;
-        UInt16 u16OtaFileHeaderControlField;
-        UInt16 u16OtaFileManufacturerCode;
+        byte u8OtaInProgress = 0;               //OTA 正在进行
+        byte u8OTAWaitForDataParamsPending = 0;         // OTA等待数据参数阻塞
+        UInt16 u16OTAWaitForDataParamsTargetAddr;       //等待数据参数 目标地址
+        byte u8OTAWaitForDataParamsSrcEndPoint;         //等待数据参数 endpoint
+        UInt32 u32OTAWaitForDataParamsCurrentTime;      //等待数据参数    当前时间
+        UInt32 u32OTAWaitForDataParamsRequestTime;      //等待数据参数    请求时间
+        UInt16 u16OTAWaitForDataParamsBlockDelay;       //等待数据参数    block Deay
+        UInt32 u32OtaFileIdentifier;                    // OTA 文件标识符
+        UInt16 u16OtaFileHeaderVersion;                 //OTA 文件 header 版本
+        UInt16 u16OtaFileHeaderLength;                  //OTA 文件 header 长度
+        UInt16 u16OtaFileHeaderControlField;            //OTA 文件控制域
+        UInt16 u16OtaFileManufacturerCode;              //
         UInt16 u16OtaFileImageType;
         UInt32 u32OtaFileVersion;
         UInt16 u16OtaFileStackVersion;
@@ -1835,11 +2052,13 @@ namespace ZGWUI
                     au8OtaFileHeaderString = new byte[32];
                     byte i;
 
+                    //文件的 21~52 共 32 个字节
                     for (i = 0; i < 32; i++)
                     {
                         au8OtaFileHeaderString[i] = au8OTAFile[20 + i];     //Ota文件头 20-51 共32个字节
                     }
 
+                    //文件的前 20 个字节
                     u32OtaFileIdentifier = BitConverter.ToUInt32(au8OTAFile, 0);        //  文件标识符
                     u16OtaFileHeaderVersion = BitConverter.ToUInt16(au8OTAFile, 4);     //  header版本
                     u16OtaFileHeaderLength = BitConverter.ToUInt16(au8OTAFile, 6);      //  header长度
@@ -1848,18 +2067,20 @@ namespace ZGWUI
                     u16OtaFileImageType = BitConverter.ToUInt16(au8OTAFile, 12);        //  Image Type
                     u32OtaFileVersion = BitConverter.ToUInt32(au8OTAFile, 14);          //  File Version
                     u16OtaFileStackVersion = BitConverter.ToUInt16(au8OTAFile, 18);     //  Stack Version
+
+
                     u32OtaFileTotalImage = BitConverter.ToUInt32(au8OTAFile, 52);       //  Total Image
                     u8OtaFileSecurityCredVersion = au8OTAFile[56];                      //  SecurityCredVersion
                     u64OtaFileUpgradeFileDest = BitConverter.ToUInt64(au8OTAFile, 57);  //  UpgradeFile Dest
                     u16OtaFileMinimumHwVersion = BitConverter.ToUInt16(au8OTAFile, 65); //  MinimumHw Version   最小硬件版本
                     u16OtaFileMaxHwVersion = BitConverter.ToUInt16(au8OTAFile, 67);     //  Max Hw Version  最大硬件版本
 
-                    textBoxOtaFileManuCode.Text = u16OtaFileManufacturerCode.ToString("X4");
+                    textBoxOtaFileManuCode.Text = u16OtaFileManufacturerCode.ToString("X4");        //  
                     textBoxOtaFileImageType.Text = u16OtaFileImageType.ToString("X4");
                     textBoxOtaFileVersion.Text = u32OtaFileVersion.ToString("X8");
                     textBoxOtaFileSize.Text = u32OtaFileTotalImage.ToString();
 
-                    //发送 ota new image 消息  文件标识符
+                    //发送 ota new image 消息               文件标识符                  header版本      header长度                    header控制域                制造商码                  Image类型            File版本               Stack版本             headerString            Total Image             SecurityCred版本              UpgradeFileDest            最小硬件版本               最大硬件版本
                     sendOtaLoadNewImage(0x02, 0x0000, u32OtaFileIdentifier, u16OtaFileHeaderVersion, u16OtaFileHeaderLength, u16OtaFileHeaderControlField, u16OtaFileManufacturerCode, u16OtaFileImageType, u32OtaFileVersion, u16OtaFileStackVersion, au8OtaFileHeaderString, u32OtaFileTotalImage, u8OtaFileSecurityCredVersion, u64OtaFileUpgradeFileDest, u16OtaFileMinimumHwVersion, u16OtaFileMaxHwVersion);                                
                 }
                 finally
@@ -5806,8 +6027,8 @@ namespace ZGWUI
                 }
                 break;
 
-                case 0x8501:
-                {
+                case 0x8501:                //  E_SL_MSG_BLOCK_REQUEST
+                    {
                     byte u8Offset = 0;
                     byte u8SQN;
                     byte u8SrcEndpoint;
@@ -5940,6 +6161,7 @@ namespace ZGWUI
                         {
                             u8NbrBytes = u8MaxDataSize;
                         }
+                        //  发送 block
                         sendOtaBlock(u8SrcAddrMode, u16SrcAddr, 1, u8SrcEndpoint, u8SQN, 0, u32FileOffset, u32FileVersion, u16ImageType, u16ManufactureCode, u8NbrBytes, au8OTAFile);
                     }
                     else
@@ -5964,8 +6186,8 @@ namespace ZGWUI
                 }
                 break;
 
-                case 0x8503:
-                {
+                case 0x8503:            //E_SL_MSG_UPGRADE_END_REQUEST
+                    {
                     byte u8Offset = 0;
                     byte u8SQN;
                     byte u8SrcEndpoint;
