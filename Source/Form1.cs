@@ -1766,6 +1766,15 @@ namespace ZGWUI
                                                 au8Data[0] = (byte)(u16Data >> 8);
                                             }
                                         }
+                                        else if (u8AttribType == 0x30)
+                                        {
+                                            byte u8Data;
+                                            if (bStringToUint8(textBoxWriteAttribData.Text, out u8Data) == true)
+                                            {
+                                                u8DataLen = 1;
+                                                au8Data[0] = u8Data;
+                                            }
+                                        }
                                         else
                                         {
                                             for (int i = 0; i < textBoxWriteAttribData.TextLength; i+=2)
