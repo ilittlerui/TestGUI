@@ -168,6 +168,12 @@ typedef enum
     /* Door Lock Cluster */
     E_SL_MSG_LOCK_UNLOCK_DOOR = 0x00F0,
 
+
+    /*Thermostat Cluster*/
+    E_SL_MSG_THERMOSTAT_SETPOINT_RAISE_LOWER = 0x0F10;
+
+
+
     /* ZHA Commands */
     E_SL_MSG_READ_ATTRIBUTE_REQUEST = 0x0100,
     E_SL_MSG_READ_ATTRIBUTE_RESPONSE = 0x8100,
@@ -679,6 +685,19 @@ namespace ZGWUI
             srcEndPointTextBoxInit(ref textBoxLockUnlockSrcEp);
             dstEndPointTextBoxInit(ref textBoxLockUnlockDstEp);
 
+            // HVAC initialization
+            addrModeComboBoxZCLInit(ref comboBoxHVACAddressMode);
+            shortAddrTextBoxInit(ref textBoxHVACAddress);
+            srcEndPointTextBoxInit(ref textBoxHVACSrcEndPoint);
+            dstEndPointTextBoxInit(ref textBoxHVACDstEndPoint);
+            setRaiseLowBoxInit(ref textBoxHVACRaiseLowData);
+            comboBoxHVACSetMode.Items.Add("Heat");
+            comboBoxHVACSetMode.Items.Add("Cool");
+            comboBoxHVACSetMode.Items.Add("Heat&Cool");
+            comboBoxHVACSetMode.SelectedIndex = 0;
+
+
+
             // IAS cluster tab initialization
             addrModeComboBoxZCLInit(ref comboBoxEnrollRspAddrMode);
             shortAddrTextBoxInit(ref textBoxEnrollRspAddr);
@@ -1160,6 +1179,14 @@ namespace ZGWUI
             textBox.Text = "Group ID (16-bit Hex)";
             textBox.MouseClick += new MouseEventHandler(textBoxClearSetTextBlack_MouseClick);
         }
+
+        private void setRaiseLowBoxInit(ref TextBox textBox)
+        {
+            textBox.ForeColor = System.Drawing.Color.Gray;
+            textBox.Text = "Temperature(8-bit Hex)";
+            textBox.MouseClick += new MouseEventHandler(textBoxClearSetTextBlack_MouseClick);
+        }
+
 
         #endregion
         
@@ -2263,7 +2290,6 @@ namespace ZGWUI
                     if (bStringToUint8(textBoxOnOffDstEndPoint.Text, out u8DstEndPoint) == true)
                     {
                         sendClusterOnOff((byte)comboBoxOnOffAddrMode.SelectedIndex, u16ShortAddr, u8SrcEndPoint, u8DstEndPoint, (byte)comboBoxOnOffCommand.SelectedIndex);
-                        //sendClusterMoveToLevel((byte)comboBoxOnOffAddrMode.SelectedIndex, u16ShortAddr, u8SrcEndPoint, u8DstEndPoint, 0, 181, 0x000F);
                     }
                 }                
             }            
@@ -4329,6 +4355,26 @@ namespace ZGWUI
             // Transmit command
             transmitCommand(cmdId, u8Len, commandData);
         }
+
+
+        private void sendSetpointRaiseLowerCommand(byte u8AddrMode, UInt16 u16ShortAddr, byte u8SrcEndPoint, byte u8DstEndPoint, byte u8Data,byte u8ModeID)
+        {
+            byte[] commandData = null;
+            commandData = new byte[7];
+
+            // Build command payload
+            commandData[0] = u8AddrMode;
+            commandData[1] = (byte)(u16ShortAddr >> 8);
+            commandData[2] = (byte)u16ShortAddr;
+            commandData[3] = u8SrcEndPoint;
+            commandData[4] = u8DstEndPoint;
+            commandData[5] = u8ModeID;
+            commandData[6] = u8Data;
+
+            // Transmit command
+            transmitCommand(0x0F10, 7, commandData);
+        }
+
 
         #endregion
 
@@ -8470,20 +8516,27 @@ namespace ZGWUI
 
         #endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        private void SetRaiseLower_button1_Click(object sender, EventArgs e)
+        {
+            //设置加热/制冷点
+            UInt16 u16ShortAddr;
+            byte u8SrcEndPoint;
+            byte u8DstEndPoint;
+            byte u8Data;
+            if (bStringToUint16(textBoxHVACAddress.Text, out u16ShortAddr) == true)
+            {
+                if (bStringToUint8(textBoxHVACSrcEndPoint.Text, out u8SrcEndPoint) == true)
+                {
+                    if (bStringToUint8(textBoxHVACDstEndPoint.Text, out u8DstEndPoint) == true)
+                    {
+                        if (bStringToUint8(textBoxHVACRaiseLowData.Text, out u8Data) == true)
+                        {
+                            sendSetpointRaiseLowerCommand((byte)comboBoxHVACAddressMode.SelectedIndex, u16ShortAddr, u8SrcEndPoint, u8DstEndPoint, u8Data, (byte)comboBoxHVACSetMode.SelectedIndex);
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
