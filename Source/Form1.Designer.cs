@@ -453,6 +453,7 @@
             this.richTextBoxCommandResponse = new System.Windows.Forms.RichTextBox();
             this.openOtaFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.toolTipGeneralTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.textBoxAddSceneExtensionsLen = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -3404,6 +3405,7 @@
             // tabPage7
             // 
             this.tabPage7.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage7.Controls.Add(this.textBoxAddSceneExtensionsLen);
             this.tabPage7.Controls.Add(this.textBoxRemoveSceneSceneID);
             this.tabPage7.Controls.Add(this.textBoxRemoveSceneGroupID);
             this.tabPage7.Controls.Add(this.textBoxRemoveSceneDstEndPoint);
@@ -4940,6 +4942,14 @@
             this.openOtaFileDialog.Filter = "OTA|*.ota";
             this.openOtaFileDialog.Title = "Select an OTA Image";
             // 
+            // textBoxAddSceneExtensionsLen
+            // 
+            this.textBoxAddSceneExtensionsLen.Location = new System.Drawing.Point(1713, 48);
+            this.textBoxAddSceneExtensionsLen.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxAddSceneExtensionsLen.Name = "textBoxAddSceneExtensionsLen";
+            this.textBoxAddSceneExtensionsLen.Size = new System.Drawing.Size(148, 28);
+            this.textBoxAddSceneExtensionsLen.TabIndex = 51;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -5427,6 +5437,7 @@
         private System.Windows.Forms.TextBox textBoxHVACRaiseLowData;
         private System.Windows.Forms.TextBox textBoxHVACDstEndPoint;
         private System.Windows.Forms.TextBox textBoxHVACSrcEndPoint;
+        private System.Windows.Forms.TextBox textBoxAddSceneExtensionsLen;
     }
 }
 

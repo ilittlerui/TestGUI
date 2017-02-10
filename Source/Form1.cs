@@ -568,6 +568,7 @@ namespace ZGWUI
             nameStringTextBoxInit(ref textBoxAddSceneName);
             stringLenTextBoxInit(ref textBoxAddSceneNameLen);
             stringMaxLenTextBoxInit(ref textBoxAddSceneMaxNameLen);
+            textBoxAddSceneExtensionsLenInit(ref textBoxAddSceneExtensionsLen);
 
             addrModeComboBoxZCLInit(ref comboBoxStoreSceneAddrMode);
             shortAddrTextBoxInit(ref textBoxStoreSceneAddr);
@@ -902,6 +903,12 @@ namespace ZGWUI
         {
             textBox.ForeColor = System.Drawing.Color.Gray;
             textBox.Text = "Max Len (8-bit Hex)";
+            textBox.MouseClick += new MouseEventHandler(textBoxClearSetTextBlack_MouseClick);
+        }
+        private void textBoxAddSceneExtensionsLenInit(ref TextBox textBox)
+        {
+            textBox.ForeColor = System.Drawing.Color.Gray;
+            textBox.Text = "Extensions  (Hex,ref zcl)";
             textBox.MouseClick += new MouseEventHandler(textBoxClearSetTextBlack_MouseClick);
         }
 
@@ -1774,14 +1781,14 @@ namespace ZGWUI
                                 {
                                     if (bStringToUint8(textBoxWriteAttribDataType.Text, out u8AttribType) == true)
                                     {
-                                        if (u8AttribType == 0x42)
+                                        if (u8AttribType == 0x42)   //character string
                                         {
                                             // if the data is a character string get the length make make this is the first byte                                         
                                             au8Data[0] = (byte)System.Text.Encoding.ASCII.GetBytes(textBoxWriteAttribData.Text, 0, textBoxWriteAttribData.TextLength, au8Data, 1);
                                             u8DataLen = au8Data[0];
                                             u8DataLen++;
                                         }
-                                        else if (u8AttribType == 0x21)
+                                        else if (u8AttribType == 0x21)  //uin16
                                         {
                                             UInt16 u16Data;
 
@@ -1793,7 +1800,19 @@ namespace ZGWUI
                                                 au8Data[0] = (byte)(u16Data >> 8);
                                             }
                                         }
-                                        else if (u8AttribType == 0x30)
+                                        else if (u8AttribType == 0x29)  //int16
+                                        {
+                                            UInt16 u16Data;
+
+                                            /* Data is a uint16 */
+                                            if (bStringToUint16(textBoxWriteAttribData.Text, out u16Data) == true)
+                                            {
+                                                u8DataLen = 2;
+                                                au8Data[1] = (byte)u16Data;
+                                                au8Data[0] = (byte)(u16Data >> 8);
+                                            }
+                                        }
+                                        else if (u8AttribType == 0x30)  //8-bit enumeration
                                         {
                                             byte u8Data;
                                             if (bStringToUint8(textBoxWriteAttribData.Text, out u8Data) == true)
@@ -1804,7 +1823,7 @@ namespace ZGWUI
                                         }
                                         else
                                         {
-                                            for (int i = 0; i < textBoxWriteAttribData.TextLength; i+=2)
+                                            for (int i = 0; i < textBoxWriteAttribData.TextLength; i += 2)
                                             {
                                                 byte u8Data = 0;
                                                 if (bStringToUint8(textBoxWriteAttribData.Text.Substring(i, 2), out u8Data) == true)
@@ -2457,7 +2476,8 @@ namespace ZGWUI
             UInt16 u16TransTime;
             byte u8NameLen;
             byte u8NameMaxLen;
-
+            byte[] au8Data = new byte[64];
+            UInt16 u16DataExtensionsLen = 0;
             if (bStringToUint16(textBoxAddSceneAddr.Text, out u16ShortAddr) == true)
             {
                 if (bStringToUint8(textBoxAddSceneSrcEndPoint.Text, out u8SrcEndPoint) == true)
@@ -2474,7 +2494,21 @@ namespace ZGWUI
                                     {
                                         if (bStringToUint8(textBoxAddSceneMaxNameLen.Text, out u8NameMaxLen) == true)
                                         {
-                                            sendAddScene((byte)comboBoxAddSceneAddrMode.SelectedIndex, u16ShortAddr, u8SrcEndPoint, u8DstEndPoint, u16GroupId, u8SceneId, u16TransTime, textBoxAddSceneName.Text, u8NameLen, u8NameMaxLen);
+                                            for (int i = 0; i < textBoxAddSceneExtensionsLen.TextLength; i += 2)
+                                            {
+                                                byte u8Data = 0;
+                                                if (bStringToUint8(textBoxAddSceneExtensionsLen.Text.Substring(i, 2), out u8Data) == true)
+                                                {
+                                                    au8Data[i/2] = u8Data;
+                                                }
+                                                else
+                                                {
+                                                    return;
+                                                }
+                                                u16DataExtensionsLen++;
+                                            }
+
+                                            sendAddScene((byte)comboBoxAddSceneAddrMode.SelectedIndex, u16ShortAddr, u8SrcEndPoint, u8DstEndPoint, u16GroupId, u8SceneId, u16TransTime, textBoxAddSceneName.Text, u8NameLen, u8NameMaxLen, au8Data, u16DataExtensionsLen);
                                         }
                                     }
                                 }
@@ -3309,7 +3343,7 @@ namespace ZGWUI
             transmitCommand(0x00A6, u8Len, commandData);
         }
 
-        private void sendAddScene(byte u8DstAddrMode, UInt16 u16ShortAddr, byte u8SrcEndPoint, byte u8DstEndPoint, UInt16 u16GroupId, byte u8SceneId, UInt16 u16TransTime, String sName, byte u8NameLen, byte u8NameMaxLen)
+        private void sendAddScene(byte u8DstAddrMode, UInt16 u16ShortAddr, byte u8SrcEndPoint, byte u8DstEndPoint, UInt16 u16GroupId, byte u8SceneId, UInt16 u16TransTime, String sName, byte u8NameLen, byte u8NameMaxLen, byte[] au8ExtData, UInt16 u16DataExtensionsLen)
         {
             byte[] commandData = null;
             commandData = new byte[32];
@@ -3329,8 +3363,25 @@ namespace ZGWUI
             commandData[u8Len++] = u8NameLen;                   // 10
             commandData[u8Len++] = u8NameMaxLen;                // 11
 
+            char[] array = sName.ToCharArray();
+            byte i;
+            for (i = 0; i < u8NameLen; i++)
+            {
+                commandData[u8Len++] = (byte)(array[i]);
+            }
+            //这个拷贝有问题  97 00 98 
             //System.Buffer.BlockCopy(sName.ToCharArray(), 0, commandData, u8Len, u8NameLen);
-            u8Len += u8NameLen;
+            //u8Len += u8NameLen;
+
+            commandData[u8Len++] = (byte)(u16DataExtensionsLen >> 8);                // 11 +    u8NameLen  
+            commandData[u8Len++] = (byte)u16DataExtensionsLen;                // 12 +    u8NameLen  
+
+
+            for (i = 0; i < u16DataExtensionsLen; i++)
+            {
+                commandData[u8Len] = au8ExtData[i];
+                u8Len++;
+            }
 
             // Transmit command
             transmitCommand(0x00A1, u8Len, commandData);

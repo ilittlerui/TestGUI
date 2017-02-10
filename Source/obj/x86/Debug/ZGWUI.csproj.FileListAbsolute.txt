@@ -1,6 +1,5 @@
 D:\VS2013Project\TestGUI\Source\bin\Debug\ZGWUI.exe
 D:\VS2013Project\TestGUI\Source\bin\Debug\ZGWUI.pdb
-D:\VS2013Project\TestGUI\Source\obj\x86\Debug\ZGWUI.csprojResolveAssemblyReference.cache
 D:\VS2013Project\TestGUI\Source\obj\x86\Debug\ListManagement.ListManager.resources
 D:\VS2013Project\TestGUI\Source\obj\x86\Debug\ZGWUI.Form1.resources
 D:\VS2013Project\TestGUI\Source\obj\x86\Debug\PortSet.PortSettings.resources
@@ -8,3 +7,4 @@ D:\VS2013Project\TestGUI\Source\obj\x86\Debug\ZGWUI.Properties.Resources.resourc
 D:\VS2013Project\TestGUI\Source\obj\x86\Debug\ZGWUI.csproj.GenerateResource.Cache
 D:\VS2013Project\TestGUI\Source\obj\x86\Debug\ZGWUI.exe
 D:\VS2013Project\TestGUI\Source\obj\x86\Debug\ZGWUI.pdb
+D:\VS2013Project\TestGUI\Source\obj\x86\Debug\ZGWUI.csprojResolveAssemblyReference.cache
