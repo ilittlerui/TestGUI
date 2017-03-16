@@ -3346,7 +3346,7 @@ namespace ZGWUI
         private void sendAddScene(byte u8DstAddrMode, UInt16 u16ShortAddr, byte u8SrcEndPoint, byte u8DstEndPoint, UInt16 u16GroupId, byte u8SceneId, UInt16 u16TransTime, String sName, byte u8NameLen, byte u8NameMaxLen, byte[] au8ExtData, UInt16 u16DataExtensionsLen)
         {
             byte[] commandData = null;
-            commandData = new byte[32];
+            commandData = new byte[64];
             byte u8Len = 0;
 
             // Build command payload   
